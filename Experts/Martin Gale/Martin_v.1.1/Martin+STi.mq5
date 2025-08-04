@@ -115,13 +115,11 @@ void OnTick()
    if (CalcProfit(POSITION_TYPE_SELL) >= Profit)
       CloseAll(POSITION_TYPE_SELL);
 
-   double tma_avg = GetBufferIndicator(tma, UPPER_LINE, 1);
    env_up  = GetBufferIndicator(tma, UPPER_LINE, 1);
    env_low = GetBufferIndicator(tma, LOWER_LINE, 1);
 
-   s += "\n\nTMA UP  - " + DoubleToString(env_up, _Digits);
-   s += "\nTMA AVG -" + DoubleToString(tma_avg, _Digits);
-   s += "\nTMA LOW -" + DoubleToString(env_low, _Digits);
+   s += "\n\nENV UP  - " + DoubleToString(env_up, _Digits);
+   s += "\nENV LOW -" + DoubleToString(env_low, _Digits);
    s += "\nPRICE - " + DoubleToString(a_symbol.Ask(), _Digits);
 
    if (a_symbol.Ask() < env_up && a_symbol.Ask() > env_low) Comment("");
