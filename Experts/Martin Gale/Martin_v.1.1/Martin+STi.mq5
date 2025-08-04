@@ -48,8 +48,8 @@ input ulong          Slippage      = 10;
 double eStep      = 0;
 double last_price = 0;
 double last_lots  = 0;
-double points, env_up, env_low;
-int    hStoch, tma, fractals;
+double points;
+int    hStoch, tma, fractals, env_1, env_2;
 int    last_pos_type = -1;
 
 //+------------------------------------------------------------------+
@@ -77,8 +77,8 @@ int OnInit()
    points = a_symbol.Point() * digits;
    eStep  = Step * points;
 
-   env_up      = iEnvelopes(a_symbol.Name(),PERIOD_CURRENT, ATRMethod, ATRShift, ATRMethod, PRICE_HIGH, ATRDeviation);
-   env_low     = iEnvelopes(a_symbol.Name(),PERIOD_CURRENT, ATRMethod, ATRShift, ATRMethod, PRICE_LOW, ATRDeviation);
+   env_1      = iEnvelopes(a_symbol.Name(),PERIOD_CURRENT, ATRPeriod, ATRShift, ATRMethod, PRICE_HIGH, ATRDeviation);
+   env_2     = iEnvelopes(a_symbol.Name(),PERIOD_CURRENT, ATRPeriod, ATRShift, ATRMethod, PRICE_LOW, ATRDeviation);
    hStoch   = iStochastic(a_symbol.Name(), PERIOD_CURRENT, InpKPeriod, InpDPeriod, InpSlowing, MaMethod, PriceField);
 
    if (tma == INVALID_HANDLE)
