@@ -1,3 +1,6 @@
+from os import getenv
+from dotenv import load_dotenv
+
 from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -6,8 +9,19 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 import MetaTrader5 as mt5
 
+load_dotenv()
+
+LOGIN = int(getenv("LOGIN_DEMO"))
+SERVER = getenv("SERVER")
+PASSWORD = getenv("PASSWORD_DEMO")
+
+
 # установим подключение к терминалу MetaTrader 5 на указанный торговый счет
-if not mt5.initialize(login=2000103679, server="AlfaForexRU-Real", password="demo$Demo1"):
+if not mt5.initialize(
+        login=LOGIN,
+        server=SERVER,
+        password=PASSWORD,
+):
     print("initialize() failed, error code =", mt5.last_error())
     quit()
 

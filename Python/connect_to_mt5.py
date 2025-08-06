@@ -1,20 +1,29 @@
+import os
+from os import getenv
+from dotenv import load_dotenv
+
 import MetaTrader5 as mt5
 import pandas as pd
+
+load_dotenv()
 
 # выведем данные о пакете MetaTrader5
 print("MetaTrader5 package author: ", mt5.__author__)
 print("MetaTrader5 package version: ", mt5.__version__)
 
-print("Для подключения введите данные счета")
-# login = input("Логин: ")
-# pswd = input("Пароль: ")
-# server = input("Сервер: ")
+LOGIN = int(getenv("LOGIN_DEMO"))
+SERVER = getenv("SERVER")
+PASSWORD = getenv("PASSWORD_DEMO")
+
 
 # установим подключение к терминалу MetaTrader 5 на указанный торговый счет
-if not mt5.initialize(login=2000103679, server="AlfaForexRU-Real", password="demo$Demo1"):
+if not mt5.initialize(
+        login=LOGIN,
+        server=SERVER,
+        password=PASSWORD,
+):
     print("initialize() failed, error code =", mt5.last_error())
     quit()
-
 
 account_info_dict = mt5.account_info()._asdict()
 for prop in account_info_dict:
