@@ -33,6 +33,8 @@ pillow==11.3.0
 ```console
 $ pip install -r requirements.txt
 ```
+
+_Альтернатива управления зависимостями [poetry](https://python-poetry.org/)_
 <hr>
 
 ## Советники
