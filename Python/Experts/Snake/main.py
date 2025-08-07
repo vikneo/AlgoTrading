@@ -3,16 +3,14 @@ from time import sleep
 
 from analysis.tech_analysis import get_analysis
 from config.settings import get_connect, TIME_SLEEP
-
-eur_usd_url = "https://ru.investing.com/technical/technical-analysis"  # EUR/USD
-gbp_usd_url = "https://ru.investing.com/technical/gbp-usd-technical-analysis"  # GBP/USD
+from config.curremcy_pair import curr_pairs
 
 def main():
     if get_connect():
         while True:
             try:
-                pprint(get_analysis(eur_usd_url))
-                pprint(get_analysis(gbp_usd_url))
+                for pair in curr_pairs:
+                    pprint(get_analysis(pair))
             except Exception as e:
                 print(e)
 
@@ -20,4 +18,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt as e:
+        print(e)

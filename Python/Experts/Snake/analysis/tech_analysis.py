@@ -21,7 +21,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
         soup: BeautifulSoup = BeautifulSoup(page.text, 'html.parser')
 
         title_pair: Tag = soup.find('a', attrs={'id': 'quoteLink'})
-        data_vol: ResultSet = soup.find_all('span', attrs={'class': 'buy uppercaseText'})
+        data_vol: ResultSet = soup.find_all('span', attrs={'class': 'uppercaseText'})
         indicators: ResultSet = soup.find_all('p', attrs={'class': 'inlineblock'})
 
         context.update(title=title_pair['title'])
@@ -73,6 +73,7 @@ def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
 
 
 if __name__ == '__main__':
-    from ..main import eur_usd_url
+    from Python.Experts.Snake.config.curremcy_pair import curr_pairs
 
-    print(get_analysis(eur_usd_url))
+    for pair in curr_pairs:
+        print(get_analysis(pair))
