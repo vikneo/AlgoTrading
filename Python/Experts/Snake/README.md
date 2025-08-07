@@ -8,4 +8,9 @@ _Start project 07.08.2025_
     * Тех. анализ валютных пар с сайта <code>[Investing.com](https://ru.investing.com/technical/technical-analysis)</code>
     ...
 
+
+### Пример данных от  <code>Investing.com</code>
+
+![img.png](static/img/img.png)
+
 Проект развивается ...

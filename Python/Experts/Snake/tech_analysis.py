@@ -1,5 +1,5 @@
 import json
-from typing import Dict
+from typing import Dict, Any
 
 import requests
 from bs4 import BeautifulSoup, ResultSet
@@ -30,7 +30,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
             context.update(resume=name.text)
 
         context.update(
-            details=details(indicators)
+            results=details(indicators)
         )
     except Exception as e:
         context.update(
@@ -51,12 +51,29 @@ def details(data: ResultSet) -> Dict[str, str]:
     """
 
     data_dict: Dict[str, str] = {}
+    indicator: Dict[str, Any] = {}
+    avg: Dict[str, Any] = {}
+    cnt = 0
     for statistic in data:
         res = json.dumps(statistic.text.strip(), ensure_ascii=False)
         res = json.loads(res)
 
         key = res.split(':')[0]
         value = res.split(':')[1]
-        data_dict[key] = value
+        if cnt <= 3:
+            indicator[key] = value
+            cnt += 1
+        else:
+            avg[key] = value
 
+    data_dict.update(
+        indicator=indicator,
+        avg=avg,
+    )
     return data_dict
+
+
+if __name__ == '__main__':
+    from main import eur_usd_url
+
+    print(get_analysis(eur_usd_url))
