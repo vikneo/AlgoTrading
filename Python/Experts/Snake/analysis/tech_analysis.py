@@ -41,7 +41,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
     return context
 
 
-def details(data: ResultSet) -> Dict[str, str]:
+def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
     """
     Собираем детальную информацию по уровням сигналов индикаторов
     и возвращаем данные в виде словаря.
@@ -51,12 +51,12 @@ def details(data: ResultSet) -> Dict[str, str]:
     """
 
     data_dict: Dict[str, str] = {}
-    indicator: Dict[str, Any] = {}
-    avg: Dict[str, Any] = {}
+    indicator: Dict[str, str] = {}
+    avg: Dict[str, str] = {}
     cnt = 0
     for statistic in data:
-        res = json.dumps(statistic.text.strip(), ensure_ascii=False)
-        res = json.loads(res)
+        res: str = json.dumps(statistic.text.strip(), ensure_ascii=False)
+        res: str = json.loads(res)
 
         key = res.split(':')[0]
         value = res.split(':')[1]
@@ -66,14 +66,13 @@ def details(data: ResultSet) -> Dict[str, str]:
         else:
             avg[key] = value
 
-    data_dict.update(
-        indicator=indicator,
-        avg=avg,
-    )
+    # noinspection PyTypeChecker
+    data_dict.update(indicator=indicator, avg=avg, )
+
     return data_dict
 
 
 if __name__ == '__main__':
-    from main import eur_usd_url
+    from ..main import eur_usd_url
 
     print(get_analysis(eur_usd_url))
