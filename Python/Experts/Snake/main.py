@@ -1,8 +1,8 @@
 from pprint import pprint
 from time import sleep
 
-from tech_analysis import get_analysis
-from settings import get_connect, TIME_SLEEP
+from analysis.tech_analysis import get_analysis
+from config.settings import get_connect, TIME_SLEEP
 
 eur_usd_url = "https://ru.investing.com/technical/technical-analysis"  # EUR/USD
 gbp_usd_url = "https://ru.investing.com/technical/gbp-usd-technical-analysis"  # GBP/USD
