@@ -21,14 +21,6 @@ $ python -m venv venv
 ```console
 $ source venv\bin\activate
 ```
-* Создать файл <code>requirements.txt</code> в корне проекта
-* Добавить зависимости
-```console
-MetaTrader5==5.0.5200
-pandas==2.3.1
-matplotlib==3.10.5
-pillow==11.3.0
-```
 * Установить зависимости
 ```console
 $ pip install -r requirements.txt
