@@ -10,7 +10,7 @@ LOGIN = int(getenv("LOGIN_DEMO"))
 SERVER = getenv("SERVER")
 PASSWORD = getenv("PASSWORD_DEMO")
 
-TIME_SLEEP = 10 * 60
+TIME_SLEEP = 1 * 60
 
 def get_connect() -> bool:
     # установим подключение к терминалу MetaTrader 5 на указанный торговый счет

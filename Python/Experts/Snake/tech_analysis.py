@@ -16,21 +16,27 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
     """
 
     context: dict = {}
-    page: Response = requests.get(currency_pair)
-    soup: BeautifulSoup = BeautifulSoup(page.text, 'html.parser')
+    try:
+        page: Response = requests.get(currency_pair)
+        soup: BeautifulSoup = BeautifulSoup(page.text, 'html.parser')
 
-    title_pair: Tag = soup.find('a', attrs={'id': 'quoteLink'})
-    data_vol: ResultSet = soup.find_all('span', attrs={'class': 'buy uppercaseText'})
-    indicators: ResultSet = soup.find_all('p', attrs={'class': 'inlineblock'})
+        title_pair: Tag = soup.find('a', attrs={'id': 'quoteLink'})
+        data_vol: ResultSet = soup.find_all('span', attrs={'class': 'buy uppercaseText'})
+        indicators: ResultSet = soup.find_all('p', attrs={'class': 'inlineblock'})
 
-    context.update(title=title_pair['title'])
+        context.update(title=title_pair['title'])
 
-    for name in data_vol:
-        context.update(resume=name.text)
+        for name in data_vol:
+            context.update(resume=name.text)
 
-    context.update(
-        details=details(indicators)
-    )
+        context.update(
+            details=details(indicators)
+        )
+    except Exception as e:
+        context.update(
+            error=type(e),
+            error_message=str(e),
+        )
 
     return context
 
