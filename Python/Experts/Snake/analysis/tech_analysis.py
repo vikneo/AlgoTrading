@@ -73,7 +73,7 @@ def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
 
 
 if __name__ == '__main__':
-    from Python.Experts.Snake.config.curremcy_pair import curr_pairs
+    from Python.Experts.Snake.config.currency_pair import curr_pairs
 
     for pair in curr_pairs:
         print(get_analysis(pair))

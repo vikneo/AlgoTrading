@@ -3,7 +3,7 @@ from time import sleep
 
 from analysis.tech_analysis import get_analysis
 from config.settings import get_connect, TIME_SLEEP
-from config.curremcy_pair import curr_pairs
+from config.currency_pair import curr_pairs
 
 def main():
     if get_connect():
