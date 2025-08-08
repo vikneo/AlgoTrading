@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run:
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r checking.txt
       - run: echo "Dependencies are installed"
       - run: echo "Started checking the repository `${{ github.repository }}` with flake8"
       - name: Сhecking with flake8
@@ -50,7 +50,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run:
-        pip install -r requirements.txt
+        pip install -r checking.txt
     - name: Test mypy `${{ github.repository }}`
       run:
         mypy --check-untyped-defs src/
@@ -65,7 +65,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run:
-        pip install -r requirements.txt
+        pip install -r checking.txt
     - name: Test with isort `${{ github.repository }}`
       run:
         isort --check-only --diff --profile black src/
@@ -80,7 +80,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run:
-        pip install -r requirements.txt
+        pip install -r checking.txt
     - name: Test with black `${{ github.repository }}`
       run:
         black --diff --check src/
