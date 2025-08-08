@@ -1,20 +1,16 @@
-from pprint import pprint
 from time import sleep
 
-from analysis.tech_analysis import get_analysis
-from config.settings import get_connect, TIME_SLEEP
-from config.currency_pair import curr_pairs
+from config.settings import TIME_SLEEP
+from snake import snake
 
 def main():
-    if get_connect():
-        while True:
-            try:
-                for pair in curr_pairs:
-                    pprint(get_analysis(pair))
-            except Exception as e:
-                print(e)
+    while True:
+        try:
+            snake.run()
+        except Exception as e:
+            print(e)
 
-            sleep(TIME_SLEEP)
+        sleep(TIME_SLEEP)
 
 
 if __name__ == '__main__':
