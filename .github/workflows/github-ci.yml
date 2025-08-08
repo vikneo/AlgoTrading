@@ -51,6 +51,7 @@ jobs:
     - name: Install dependencies
       run:
         pip install -r checking.txt &&
+        pip install types-requests &&
         mypy --install-types
     - name: Test mypy `${{ github.repository }}`
       run:
