@@ -1,0 +1,101 @@
+name: parking-ci
+
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+
+# The variant first
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+# The variant second
+# on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test-flake8:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10"]
+        # python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: echo "Started Installing dependencies"
+      - name: Install dependencies
+        run:
+          # python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - run: echo "Dependencies are installed"
+      - run: echo "Started checking the repository `${{ github.repository }}` with flake8"
+      - name: Сhecking with flake8
+        run:
+          flake8 src/
+      - run: echo "Finished checking with flake8"
+
+  test-mypy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run:
+        pip install -r requirements.txt
+    - name: Test mypy `${{ github.repository }}`
+      run:
+        mypy --check-untyped-defs src/
+
+  test-isort:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run:
+        pip install -r requirements.txt
+    - name: Test with isort `${{ github.repository }}`
+      run:
+        isort --check-only --diff --profile black src/
+
+  test-black:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run:
+        pip install -r requirements.txt
+    - name: Test with black `${{ github.repository }}`
+      run:
+        black --diff --check src/
+
+  test-pytest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run:
+        pip install -r requirements.txt
+    - name: Test with pytest `${{ github.repository }}`
+      run:
+        pytest src/tests/
