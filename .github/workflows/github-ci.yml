@@ -50,7 +50,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run:
-        pip install -r checking.txt
+        pip install -r checking.txt &&
+        mypy --install-types
     - name: Test mypy `${{ github.repository }}`
       run:
         mypy --check-untyped-defs Python/
