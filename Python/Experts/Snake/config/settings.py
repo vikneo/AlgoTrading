@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-LOGIN = int(getenv("LOGIN_DEMO"))
+LOGIN = int(getenv("LOGIN_DEMO"))  # type: ignore
 SERVER = getenv("SERVER")
 PASSWORD = getenv("PASSWORD_DEMO")
 

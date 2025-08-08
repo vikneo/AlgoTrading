@@ -1,9 +1,8 @@
 import json
-from typing import Dict, Any
+from typing import Dict
 
 import requests
 from bs4 import BeautifulSoup, ResultSet
-from bs4.element import Tag
 from requests import Response
 
 
@@ -18,21 +17,19 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
     context: dict = {}
     try:
         page: Response = requests.get(currency_pair)
-        soup: BeautifulSoup = BeautifulSoup(page.text, 'html.parser')
+        soup: BeautifulSoup = BeautifulSoup(page.text, "html.parser")
 
-        title_pair: Tag = soup.find('a', attrs={'id': 'quoteLink'})
-        data_vol: ResultSet = soup.find_all('span', attrs={'class': 'uppercaseText'})
-        indicators: ResultSet = soup.find_all('p', attrs={'class': 'inlineblock'})
+        title_pair = soup.find("a", attrs={"id": "quoteLink"})
+        data_vol: ResultSet = soup.find_all("span", attrs={"class": "uppercaseText"})
+        indicators: ResultSet = soup.find_all("p", attrs={"class": "inlineblock"})
 
-        context.update(title=title_pair['title'])
+        context.update(title=title_pair["title"])  # type: ignore
 
         for name in data_vol:
             context.update(resume=name.text)
 
-        context.update(
-            results=details(indicators)
-        )
-    except Exception as e:
+        context.update(results=details(indicators))
+    except OSError as e:
         context.update(
             error=type(e),
             error_message=str(e),
@@ -41,7 +38,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
     return context
 
 
-def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
+def details(data: ResultSet) -> Dict[str, str]:
     """
     Собираем детальную информацию по уровням сигналов индикаторов
     и возвращаем данные в виде словаря.
@@ -55,11 +52,11 @@ def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
     avg: Dict[str, str] = {}
     cnt = 0
     for statistic in data:
-        res: str = json.dumps(statistic.text.strip(), ensure_ascii=False)
-        res: str = json.loads(res)
+        _res: str = json.dumps(statistic.text.strip(), ensure_ascii=False)
+        res: str = json.loads(_res)
 
-        key = res.split(':')[0]
-        value = res.split(':')[1]
+        key = res.split(":")[0]
+        value = res.split(":")[1]
         if cnt <= 3:
             indicator[key] = value
             cnt += 1
@@ -67,12 +64,12 @@ def details(data: ResultSet) -> Dict[str, str | Dict[str, Any]]:
             avg[key] = value
 
     # noinspection PyTypeChecker
-    data_dict.update(indicator=indicator, avg=avg, )
+    data_dict.update(indicator=indicator, avg=avg)  # type: ignore
 
     return data_dict
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from Python.Experts.Snake.config.currency_pair import curr_pairs
 
     for pair in curr_pairs:

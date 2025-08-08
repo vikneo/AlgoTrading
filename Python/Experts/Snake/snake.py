@@ -1,7 +1,6 @@
 from pprint import pprint
 
-import MetaTrader5 as mt5  # ignore type
-
+import MetaTrader5 as mt5  # type: ignore
 from analysis.tech_analysis import get_analysis
 from config.currency_pair import curr_pairs
 from config.settings import LOGIN, PASSWORD, SERVER
@@ -10,22 +9,21 @@ from config.settings import LOGIN, PASSWORD, SERVER
 class Snake:
 
     def __init__(
-            self,
-            lots: float,
-            deviation: int,
-            login: int,
-            server: str,
-            password: str,
-            sl: int = 100,  # stop_loss
-            tp: int = 100,  # take_profit
-            magic: int = 1234,  # magic number - ID expert
+        self,
+        lots: float,
+        deviation: int,
+        login: int,
+        server: str,
+        password: str,
+        sl: int = 100,  # stop_loss
+        tp: int = 100,  # take_profit
+        magic: int = 1234,  # magic number - ID expert
     ) -> None:
         self.lots = lots
-        self.sl = sl,
-        self.tp = tp,
-        self.magic = magic,
+        self.sl = sl
+        self.tp = tp
+        self.magic = magic
         self.deviation = deviation
-        #===========================
         self.login = login
         self.server = server
         self.password = password
@@ -34,9 +32,9 @@ class Snake:
     def __connect(self) -> bool:
         # установим подключение к терминалу MetaTrader 5 на указанный торговый счет
         if not mt5.initialize(
-                login=self.login,
-                server=self.server,
-                password=self.password,
+            login=self.login,
+            server=self.server,
+            password=self.password,
         ):
             print("initialize() failed, error code =", mt5.last_error())
             quit()
@@ -49,12 +47,12 @@ class Snake:
                     pprint(get_analysis(pair))
                 self.get_orders()
                 self.get_test_position()
-            except Exception as e:
+            except OSError as e:
                 print(e)
             finally:
                 mt5.shutdown()
 
-    def get_orders(self) -> tuple | None:
+    def get_orders(self):
         """
         Получает все свои открытые позиции.
         :return: None.
@@ -63,7 +61,6 @@ class Snake:
         if orders:
             return orders
 
-        print("No orders found")
         return None
 
     @staticmethod
@@ -114,18 +111,14 @@ class Snake:
                 if field == "request":
                     trade_request_dict = result_dict[field]._asdict()
                     for tradereq_filed in trade_request_dict:
-                        print("       trade_request: {}={}".format(
-                            tradereq_filed, trade_request_dict[tradereq_filed]
-                        ))
+                        print(
+                            "       trade_request: {}={}".format(
+                                tradereq_filed, trade_request_dict[tradereq_filed]
+                            )
+                        )
 
 
-snake = Snake(
-    lots=0.01,
-    deviation=20,
-    login=LOGIN,
-    server=SERVER,
-    password=PASSWORD
-)
+snake = Snake(lots=0.01, deviation=20, login=LOGIN, server=SERVER, password=PASSWORD)
 
 if __name__ == "__main__":
     snake = Snake(0.01, 20, LOGIN, SERVER, PASSWORD)
