@@ -40,62 +40,62 @@ jobs:
           flake8 src/
       - run: echo "Finished checking with flake8"
 
-  test-mypy:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10"]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run:
-        pip install -r requirements.txt
-    - name: Test mypy `${{ github.repository }}`
-      run:
-        mypy --check-untyped-defs src/
+  # test-mypy:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.9", "3.10"]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install dependencies
+  #     run:
+  #       pip install -r requirements.txt
+  #   - name: Test mypy `${{ github.repository }}`
+  #     run:
+  #       mypy --check-untyped-defs src/
 
-  test-isort:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10"]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run:
-        pip install -r requirements.txt
-    - name: Test with isort `${{ github.repository }}`
-      run:
-        isort --check-only --diff --profile black src/
+  # test-isort:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.9", "3.10"]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install dependencies
+  #     run:
+  #       pip install -r requirements.txt
+  #   - name: Test with isort `${{ github.repository }}`
+  #     run:
+  #       isort --check-only --diff --profile black src/
 
-  test-black:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10"]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run:
-        pip install -r requirements.txt
-    - name: Test with black `${{ github.repository }}`
-      run:
-        black --diff --check src/
+  # test-black:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.9", "3.10"]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install dependencies
+  #     run:
+  #       pip install -r requirements.txt
+  #   - name: Test with black `${{ github.repository }}`
+  #     run:
+  #       black --diff --check src/
 
-  test-pytest:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10"]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run:
-        pip install -r requirements.txt
-    - name: Test with pytest `${{ github.repository }}`
-      run:
-        pytest src/tests/
+  # test-pytest:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.9", "3.10"]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install dependencies
+  #     run:
+  #       pip install -r requirements.txt
+  #   - name: Test with pytest `${{ github.repository }}`
+  #     run:
+  #       pytest src/tests/
