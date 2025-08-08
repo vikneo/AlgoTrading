@@ -37,7 +37,7 @@ jobs:
       - run: echo "Started checking the repository `${{ github.repository }}` with flake8"
       - name: Сhecking with flake8
         run:
-          flake8 src/
+          flake8 Python/
       - run: echo "Finished checking with flake8"
 
   test-mypy:
@@ -53,7 +53,7 @@ jobs:
         pip install -r checking.txt
     - name: Test mypy `${{ github.repository }}`
       run:
-        mypy --check-untyped-defs src/
+        mypy --check-untyped-defs Python/
 
   test-isort:
     runs-on: ${{ matrix.os }}
@@ -68,7 +68,7 @@ jobs:
         pip install -r checking.txt
     - name: Test with isort `${{ github.repository }}`
       run:
-        isort --check-only --diff --profile black src/
+        isort --check-only --diff --profile black Python/
 
   test-black:
     runs-on: ${{ matrix.os }}
@@ -83,7 +83,7 @@ jobs:
         pip install -r checking.txt
     - name: Test with black `${{ github.repository }}`
       run:
-        black --diff --check src/
+        black --diff --check Python/
 
   # test-pytest:
   #   runs-on: ${{ matrix.os }}
@@ -98,4 +98,4 @@ jobs:
   #       pip install -r requirements.txt
   #   - name: Test with pytest `${{ github.repository }}`
   #     run:
-  #       pytest src/tests/
+  #       pytest Python/tests/
