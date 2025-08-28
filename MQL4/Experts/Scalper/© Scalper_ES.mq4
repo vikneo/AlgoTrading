@@ -1,27 +1,35 @@
 //+------------------------------------------------------------------+
 //|                                              © Scalper_ES v4.mq4 |
-//|                                       Copyright 2019, V Martynov |
+//|                                       Copyright 2025, V Martynov |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
-#property copyright "Copyright 2019, V Martynov"
+#property copyright "Copyright 2025, MetaQuotes Software Corp."
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
+#property description    "EUR m5 Body = 135";
+#property description    "GBP m5 Body = 185";
+#property description    "GBP m1 Body = 115";
+#property description    "Gold m5 Body = 300-345";
+#property description    "Gold m1 Body = 215";
+#property description    "EUR m5 step = 24 // GBP m5  step = 35 // Gold m5 step = 60";
+#property description    "EUR m5 mini = 12 // GBP m5  mini = 20 // Gold m5 mini = 53-55";
+#property description    "";
 
-extern int      Magic           = 0;
-extern double   Startdepo       = 47.44;
-extern int      MaxTrades       = 1;
-extern double   RiskLot         = 1;
-extern double   MaxLot          = 10;
-extern bool     UseMM           = true;
-extern int      StopLoss        = 50;
-extern int      TrailingStep    = 3;
-extern int      Body            = 185;
-extern int      step            = 26;
-extern int      mini            = 20;
-extern int      TryCount        = 10;
-extern double   Deviation       = 0.1;
-extern bool     ExpertStop      = false;
+extern string  Name         = "© Scalper_ES v4"; // Название советника
+extern bool    UseMM        = true;  // Управление maney managmen
+extern int     MaxTrades    = 1;     // Количество отложенных ордеров
+extern double  RiskLot      = 2;     // Управление риском дипозита в %
+extern double  Lot          = 0.01;  // Размер лота
+extern double  MaxLot       = 10;    // Максимальный размера лота
+extern int     StopLoss     = 30;
+extern int     Trailing     = 1;     // TralingStop в пунктах
+extern int     Body         = 135;   // Размер тело свечи
+extern int     StepOrder    = 5;     // Шаг для удаления отложенного ордера
+extern int     OpenPosition = 1;     // Устновка отложенного ордера от цены
+extern int     TryCount     = 10;    // Количество попыток для открытия ордера
+extern int     Magic        = 0;     // Магический номер советника
+extern bool    ExpertStop   = false; // Ручное отклюсение советника
 //+------------------------------------------------------------------+
 int  ticket;
 double ma1_1, ma1_2, ma2_1, ma2_2, Lots, m0, m1, sl, o_price, profit;
@@ -79,22 +87,31 @@ struct candle
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
 int OnInit()
-  {
+{
+   ma1_1 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_HIGH, 0.05, MODE_UPPER, 0);
+   ma1_2 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_HIGH, 0.05, MODE_LOWER, 0);
+
+   ma2_1 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_LOW, 0.05, MODE_UPPER, 0);
+   ma2_2 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_LOW, 0.05, MODE_LOWER, 0);
+
+
+   m0 = NormalizeDouble(ma2_2 - 0 * Point, Digits);
+   m1 = NormalizeDouble(ma1_1 + 0 * Point, Digits);
 
    return(INIT_SUCCEEDED);
-  }
+}
 //+------------------------------------------------------------------+
 //| Expert deinitialization function                                 |
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
-  {
+{
 
-  }
+}
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
 //+------------------------------------------------------------------+
 void OnTick()
-  {
+{
    candle c1, c2, c3;
    c1.load(2);
    c2.load(1);
@@ -105,27 +122,21 @@ void OnTick()
 //   Comment("                 СРОК ЛИЦЕНЗИИ ИСТЕК !!!");
 //   return;
 //   }
-   BalansProfit();
+   profit = BalansProfit();
+   TrailingStop(buy_tick, sell_tick);
 
-   if(UseMM == true)
-      TrailingStop(buy_tick, sell_tick);
-   int Key = MarketInfo(Symbol(),MODE_SPREAD);
-   if(Magic == 0)
-      Magic += Period() + Key;
+   if (UseMM)
+   {
+      Lots = NormalizeDouble(LotsBuyRisk(RiskLot, StopLoss), 2);
+   }
+   else Lots = Lot;
 
-   Lots = NormalizeDouble(LotsBuyRisk(CountTrades(), RiskLot, StopLoss), 2);
    if(Lots >= MaxLot)
       Lots = MaxLot;
 
-   ma1_1 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_HIGH, Deviation, MODE_UPPER, 0);
-   ma1_2 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_HIGH, Deviation, MODE_LOWER, 0);
-
-   ma2_1 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_LOW, Deviation, MODE_UPPER, 0);
-   ma2_2 = iEnvelopes(Symbol(), 0, 14, MODE_LWMA, 0, PRICE_LOW, Deviation, MODE_LOWER, 0);
-
-
-   m0 = NormalizeDouble(ma2_2 - 0 * Point, Digits);
-   m1 = NormalizeDouble(ma1_1 + 0 * Point, Digits);
+   int Key = MarketInfo(Symbol(),MODE_SPREAD);
+   if(Magic == 0)
+      Magic += Period() + Key;
 
    double body_size = 0;
    body_size = NormalizeDouble(Body * Point, Digits); //средний арифметический размер тела из выборки на глубину depth
@@ -155,7 +166,7 @@ void OnTick()
       if(BuyStop() == 0  && CountTrades() == 0  && c3.body > body_size && Ask < m0)
         {
 
-         double price = NormalizeDouble(Ask + mini * Point, Digits);
+         double price = NormalizeDouble(Ask + OpenPosition * Point, Digits);
          sl = NormalizeDouble(Ask - StopLoss * Point, Digits);
 
          ticket = OrderSendx(Symbol(), OP_BUYSTOP, Lots, price, 5, sl, 0, "", Magic, 0, clrAqua);
@@ -165,7 +176,7 @@ void OnTick()
       o_price = LastOpenOrder(OP_BUYSTOP);
       if(LastOpenOrder(OP_BUYSTOP) >= 1)
         {
-         if(Ask < (o_price - step * Point))
+         if(Ask < (o_price - StepOrder * Point))
            {
             for(int i = OrdersTotal() - 1; i >= 0; i--)
               {
@@ -184,7 +195,7 @@ void OnTick()
       if(SellStop() == 0  && CountTrades() == 0 && c3.body > body_size && Bid > m1)
         {
 
-         double price = NormalizeDouble(Bid - mini * Point, Digits);
+         double price = NormalizeDouble(Bid - OpenPosition * Point, Digits);
          sl = NormalizeDouble(Bid + StopLoss * Point, Digits);
 
          ticket = OrderSendx(Symbol(), OP_SELLSTOP, Lots, price, 5, sl, 0, "", Magic, 0, clrBrown);
@@ -194,7 +205,7 @@ void OnTick()
       o_price = LastOpenOrder(OP_SELLSTOP);
       if(LastOpenOrder(OP_SELLSTOP) >= 1)
         {
-         if(Bid > (o_price + step * Point))
+         if(Bid > (o_price + StepOrder * Point))
            {
             for(int i = OrdersTotal() - 1; i >= 0; i--)
               {
@@ -213,7 +224,7 @@ void OnTick()
      }
    else
       return;
-  }
+}
 //+------------------------------------------------------------------+
 int OrderSendx(string   symbol,               // символ
                int      cmd,                 // торговая операция
@@ -349,7 +360,7 @@ int SellStop()
    return(count);
   }
 //+------------------------------------------------------------------+
-double LotsBuyRisk(int op_tipe, double risk, int _sl)
+double LotsBuyRisk(double risk, int _sl)
   {
    double lot_min  = MarketInfo(Symbol(), MODE_MINLOT);    // определение значения минимального лота
    double lot_max  = MarketInfo(Symbol(), MODE_MAXLOT);    // определение значения максимального лота
@@ -359,6 +370,7 @@ double LotsBuyRisk(int op_tipe, double risk, int _sl)
    double UsdPerPip = 0;   // определение денег на один пункт
 
    lot = profit * risk / 100; //расчет по отношению объема и стоплосса
+   Print("lot ============> ", lot);
    UsdPerPip = lot / _sl;               //полученный объем делим на стоплосс
 
    lot = NormalizeDouble(UsdPerPip / lotcost, 2);
@@ -386,14 +398,14 @@ void TrailingStop(int &buy[], int &sell[])
               {
                ArrayResize(buy, ArraySize(buy) + 1, 12);
                buy[ArraySize(buy) - 1] = OrderTicket();
-               if(Bid >= OrderOpenPrice() + TrailingStep * Point)
+               if(Bid >= OrderOpenPrice() + Trailing * Point)
                  {
                   if((StopLoss * Point) < (Bid + OrderOpenPrice()))
                     {
-                     if((Bid - TrailingStep * Point) > OrderStopLoss())
+                     if((Bid - Trailing * Point) > OrderStopLoss())
                        {
                         if(OrderStopLoss() <= sl)
-                           sl = NormalizeDouble((Bid - TrailingStep * Point), Digits);
+                           sl = NormalizeDouble((Bid - Trailing * Point), Digits);
 
                         if(!OrderModify(OrderTicket(), OrderOpenPrice(), sl, 0, 0))
                            Print("1");
@@ -405,14 +417,14 @@ void TrailingStop(int &buy[], int &sell[])
               {
                ArrayResize(sell, ArraySize(sell) + 1, 12);
                sell[ArraySize(sell) - 1] = OrderTicket();
-               if(Ask <= OrderOpenPrice() - TrailingStep * Point)
+               if(Ask <= OrderOpenPrice() - Trailing * Point)
                  {
                   if((StopLoss * Point) < (OrderOpenPrice() + Ask))
                     {
-                     if((Ask + TrailingStep * Point) < OrderStopLoss())
+                     if((Ask + Trailing * Point) < OrderStopLoss())
                        {
                         if(OrderStopLoss() >= sl)
-                           sl = NormalizeDouble((Ask + TrailingStep * Point), Digits);
+                           sl = NormalizeDouble((Ask + Trailing * Point), Digits);
 
                         if(!OrderModify(OrderTicket(), OrderOpenPrice(), sl, 0, 0))
                            Print("2");
@@ -449,16 +461,16 @@ double LastOpenOrder(int otype)
 
   }
 //+------------------------------------------------------------------+
-void BalansProfit()
-  {
-   profit = 0;
+double BalansProfit()
+{
+   double _profit = 0;
    for(int i = 0; i < OrdersHistoryTotal(); i++)
      {
       if(OrderSelect(i, SELECT_BY_POS, MODE_HISTORY))
         {
-         //profit = OrderSwap() + profit + OrderProfit();
-         profit = AccountBalance() - Startdepo;
+          _profit += OrderSwap() + OrderProfit();
         }
      }
-  }
+  return _profit;
+}
 //+------------------------------------------------------------------+
