@@ -19,7 +19,7 @@ $ python -m venv venv
 ```
 * Активация вирт. окружения
 ```console
-$ source venv\bin\activate
+$ source venv/bin/activate
 ```
 * Установить зависимости
 ```console

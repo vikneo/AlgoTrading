@@ -149,12 +149,9 @@ void OnTick()
    s += "\nMagic   : " + IntegerToString(Magic);
    s += "\nSpred   : " + DoubleToStr(spred, 0);
    s += "\nProfit    : " + DoubleToStr(profit,2);
-   if(Digits == 5)
-      s += "\nBody    : " + DoubleToStr(c3.body * 100000, 0);
-   if(Digits == 3)
-      s += "\nBody    : " + DoubleToStr(c3.body * 1000, 0);
-   if(Digits == 2)
-      s += "\nBody    : " + DoubleToStr(c3.body * 100, 0);
+   if(Digits == 5 s += "\nBody    : " + DoubleToStr(c3.body * 100000, 0);
+   if(Digits == 3) s += "\nBody    : " + DoubleToStr(c3.body * 1000, 0);
+   if(Digits == 2) s += "\nBody    : " + DoubleToStr(c3.body * 100, 0);
    if(ExpertStop == true)
       s += "\nExpert   :  OFF";
    if(ExpertStop == false)
@@ -163,18 +160,18 @@ void OnTick()
    Comment(s);
    if(ExpertStop == false)
      {
-      if(BuyStop() == 0  && CountTrades() == 0  && c3.body > body_size && Ask < m0)
+      if( here is the entry condition )
         {
 
          double price = NormalizeDouble(Ask + OpenPosition * Point, Digits);
          sl = NormalizeDouble(Ask - StopLoss * Point, Digits);
 
          ticket = OrderSendx(Symbol(), OP_BUYSTOP, Lots, price, 5, sl, 0, "", Magic, 0, clrAqua);
-         SendNotification("© Scalper_ES v4 : - Красавчик помогай. Пытаюсь купить " + "<< " + Symbol() + "  M" + IntegerToString(Period()) + " >>");
-         Alert("© Scalper_ES v4 : - Покупка светит, покупка !!!" + Symbol() + IntegerToString(Period()));
+         SendNotification("© Scalper_ES v4 : - Выставил ордер на покупку " + "<< " + Symbol() + "  M" + IntegerToString(Period()) + " >>");
+         Alert("© Scalper_ES v4 : - Покупка, покупка !!!" + Symbol() + IntegerToString(Period()));
         }
       o_price = LastOpenOrder(OP_BUYSTOP);
-      if(LastOpenOrder(OP_BUYSTOP) >= 1)
+      if(o_price >= 1)
         {
          if(Ask < (o_price - StepOrder * Point))
            {
@@ -192,18 +189,18 @@ void OnTick()
 
            }
         }
-      if(SellStop() == 0  && CountTrades() == 0 && c3.body > body_size && Bid > m1)
+      if( here is the entry condition )
         {
 
          double price = NormalizeDouble(Bid - OpenPosition * Point, Digits);
          sl = NormalizeDouble(Bid + StopLoss * Point, Digits);
 
          ticket = OrderSendx(Symbol(), OP_SELLSTOP, Lots, price, 5, sl, 0, "", Magic, 0, clrBrown);
-         SendNotification("© Scalper_ES v4 : - Красавчик помогай. Пытаюсь продать " + "<< " + Symbol() + "  M" + IntegerToString(Period()) + " >>");
-         Alert("© Scalper_ES v4 : - Продажа светит, продажа !!!" + Symbol() + IntegerToString(Period()));
+         SendNotification("© Scalper_ES v4 : - Выставил ордер на продажу " + "<< " + Symbol() + "  M" + IntegerToString(Period()) + " >>");
+         Alert("© Scalper_ES v4 : - Продажа, продажа !!!" + Symbol() + IntegerToString(Period()));
         }
       o_price = LastOpenOrder(OP_SELLSTOP);
-      if(LastOpenOrder(OP_SELLSTOP) >= 1)
+      if(o_price >= 1)
         {
          if(Bid > (o_price + StepOrder * Point))
            {
@@ -370,7 +367,6 @@ double LotsBuyRisk(double risk, int _sl)
    double UsdPerPip = 0;   // определение денег на один пункт
 
    lot = profit * risk / 100; //расчет по отношению объема и стоплосса
-   Print("lot ============> ", lot);
    UsdPerPip = lot / _sl;               //полученный объем делим на стоплосс
 
    lot = NormalizeDouble(UsdPerPip / lotcost, 2);
