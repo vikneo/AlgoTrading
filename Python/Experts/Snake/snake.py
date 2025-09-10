@@ -28,6 +28,7 @@ class Snake:
         self.server = server
         self.password = password
         self.symbol = "EURUSDrfd"  # temporary
+        self.tickets = []
 
     def __connect(self) -> bool:
         # установим подключение к терминалу MetaTrader 5 на указанный торговый счет
@@ -57,27 +58,29 @@ class Snake:
         Получает все свои открытые позиции.
         :return: None.
         """
-        orders = mt5.orders_get(self.symbol)
-        if orders:
-            return orders
+        self.tickets = mt5.orders_get(self.symbol)
+        if self.tickets:
+            return self.tickets
 
         return None
 
-    @staticmethod
-    def get_test_position():
-        order = mt5.positions_get(ticket=2022299160)
-        if order:
-            print("Order symbol = ", order[0].symbol)
-            print("Order ticket = ", order[0].ticket)
-            print("Order magic = ", order[0].magic)
-            print("Order price = ", order[0].profit)
-        else:
-            print("Order not found")
+    def get_test_position(self):
+        for ticket in self.tickets:
+            order = mt5.positions_get(ticket=ticket)
+            if order:
+                print("Order symbol = ", order[0].symbol)
+                print("Order ticket = ", order[0].ticket)
+                print("Order magic = ", order[0].magic)
+                print("Order price = ", order[0].profit)
+            else:
+                print("Order not found")
 
-    def get_data(self):
+    def get_indicator(self):
+
+
+    def _order_send(self, price):
 
         point = mt5.symbol_info(self.symbol).point
-        price = mt5.symbol_info_tick(self.symbol).ask
 
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
