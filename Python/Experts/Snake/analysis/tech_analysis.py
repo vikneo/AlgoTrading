@@ -1,4 +1,6 @@
+import datetime
 import json
+from time import sleep
 from typing import Dict
 
 import requests
@@ -22,8 +24,9 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
         title_pair = soup.find("a", attrs={"id": "quoteLink"})
         data_vol: ResultSet = soup.find_all("span", attrs={"class": "uppercaseText"})
         indicators: ResultSet = soup.find_all("p", attrs={"class": "inlineblock"})
+        data_now = datetime.datetime.today().strftime("%d-%m-%Y %H:%M:%S")
 
-        context.update(title=title_pair["title"])  # type: ignore
+        context.update(title=title_pair["title"], date_time=data_now)  # type: ignore
 
         for name in data_vol:
             context.update(resume=name.text)
@@ -35,6 +38,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
             error_message=str(e),
         )
 
+    save_file(context=context)
     return context
 
 
@@ -69,8 +73,22 @@ def details(data: ResultSet) -> Dict[str, str]:
     return data_dict
 
 
+def save_file(context: dict):
+    file_name = "forex_pars.json"
+    text = json.dumps(context, ensure_ascii=False)
+
+    with open(file_name, "+a", encoding="utf8") as file:
+        file.write(f"{text}\n")
+
+
 if __name__ == "__main__":
-    from Python.Experts.Snake.config.currency_pair import curr_pairs
+    #from Python.Experts.Snake.config.currency_pair import curr_pairs
+    curr_pairs = [
+    "https://ru.investing.com/technical/technical-analysis",  # EUR/USD
+    "https://ru.investing.com/technical/gbp-usd-technical-analysis",  # GBP/USD
+    "https://ru.investing.com/technical/usd-jpy-technical-analysis",  # USD/JPY
+    ]
 
     for pair in curr_pairs:
         print(get_analysis(pair))
+        sleep(2)
