@@ -74,11 +74,16 @@ def details(data: ResultSet) -> Dict[str, str]:
 
 
 def save_file(context: dict):
-    file_name = "forex_pars.json"
-    text = json.dumps(context, ensure_ascii=False)
+    try:
+        title = context["title"].replace("/", "_")
+        file_name = f"{title.split(" ")[0]}_Data.json"
+        print(f"{title} \t: - Считан!")
+        text = json.dumps(context, ensure_ascii=False)
 
-    with open(file_name, "+a", encoding="utf8") as file:
-        file.write(f"{text}\n")
+        with open(file_name, "w", encoding="utf8") as file:
+            file.write(f"{text}\n")
+    except KeyError as err:
+        print("Описание Ошибки: - ", err)
 
 
 if __name__ == "__main__":
@@ -90,5 +95,5 @@ if __name__ == "__main__":
     ]
 
     for pair in curr_pairs:
-        print(get_analysis(pair))
+        get_analysis(pair)
         sleep(2)
