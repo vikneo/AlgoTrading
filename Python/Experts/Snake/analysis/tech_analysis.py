@@ -39,7 +39,6 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
         )
 
     save_file(context=context)
-    return context
 
 
 def details(data: ResultSet) -> Dict[str, str]:
@@ -76,11 +75,12 @@ def details(data: ResultSet) -> Dict[str, str]:
 def save_file(context: dict):
     try:
         title = context["title"].replace("/", "_")
-        file_name = f"{title.split(" ")[0]}_Data.json"
+        file_name = f"{title.split(' ')[0]}_Data.json"
+        path_to_file = "data_json/" + file_name
         print(f"{title} \t: - Считан!")
         text = json.dumps(context, ensure_ascii=False)
 
-        with open(file_name, "w", encoding="utf8") as file:
+        with open(path_to_file, "w", encoding="utf8") as file:
             file.write(f"{text}\n")
     except KeyError as err:
         print("Описание Ошибки: - ", err)
