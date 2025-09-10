@@ -39,6 +39,7 @@ def get_analysis(currency_pair: str) -> Dict[str, str]:
         )
 
     save_file(context=context)
+    return context
 
 
 def details(data: ResultSet) -> Dict[str, str]:
@@ -87,11 +88,11 @@ def save_file(context: dict):
 
 
 if __name__ == "__main__":
-    #from Python.Experts.Snake.config.currency_pair import curr_pairs
+    # from Python.Experts.Snake.config.currency_pair import curr_pairs
     curr_pairs = [
-    "https://ru.investing.com/technical/technical-analysis",  # EUR/USD
-    "https://ru.investing.com/technical/gbp-usd-technical-analysis",  # GBP/USD
-    "https://ru.investing.com/technical/usd-jpy-technical-analysis",  # USD/JPY
+        "https://ru.investing.com/technical/technical-analysis",  # EUR/USD
+        "https://ru.investing.com/technical/gbp-usd-technical-analysis",  # GBP/USD
+        "https://ru.investing.com/technical/usd-jpy-technical-analysis",  # USD/JPY
     ]
 
     for pair in curr_pairs:

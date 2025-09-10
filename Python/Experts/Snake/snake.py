@@ -28,7 +28,7 @@ class Snake:
         self.server = server
         self.password = password
         self.symbol = "EURUSDrfd"  # temporary
-        self.tickets = []
+        self.tickets: list[str] = []
 
     def __connect(self) -> bool:
         # установим подключение к терминалу MetaTrader 5 на указанный торговый счет
@@ -76,7 +76,7 @@ class Snake:
                 print("Order not found")
 
     def get_indicator(self):
-
+        pass
 
     def _order_send(self, price):
 
