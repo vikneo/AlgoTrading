@@ -9,7 +9,7 @@ class Envelopes:
     Описывает индикатор Envelopes.
 
     Значения по умолчанию:
-        periodt = 14,
+        period = 14,
         deviation = 0.1,
         method = 3,
         applied_price = 2,
@@ -32,13 +32,39 @@ class Envelopes:
         symbol: str = "EURUSD",
         period: int = 14,
         deviation: float = 0.05,
+        method: int = 3,
+        applied_price: int = 2,
+        shift: int = 0,
     ):
         self.mt5 = mt5
         self.symbol = symbol
         self.period = period
         self.deviation = deviation
+        self.method = self.__ma_method(method)
+        self.applied_price = self.__applied_price(applied_price)
+        self.shift = shift
         self.env_up = 0
         self.env_low = 0
+
+    @staticmethod
+    def __ma_method(method: int) -> str:
+        _METHOD = {
+            0: "MODE_SMA",
+            1: "MODE_EMA",
+            2: "MODE_SMMA",
+            3: "MODE_LWMA",
+        }
+        return _METHOD[method]
+
+    @staticmethod
+    def __applied_price(price: int) -> str:
+        _PRICE = {
+            0: "PRICE_OPEN",
+            1: "PRICE_CLOSE",
+            2: "PRICE_HIGH",
+            3: "PRICE_LOW",
+        }
+        return _PRICE[price]
 
     def __str__(self) -> str:
         return (
