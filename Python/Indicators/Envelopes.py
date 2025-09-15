@@ -126,20 +126,22 @@ class Envelopes:
     def calculate(self) -> None:
         """
         Метод подсчитывает границы индикатора по ценам `HIGH и по ценам `LOWER`;
-        :param rates: массив данных с ценами боров и меткой времени;
         :return: tuple с ценами границ верхней и нижней линии индикатора;
         """
         rates = self.__get_bars()
-        lwma_high = self.__get_lwma(rates["high"])[-1]
-        lwma_low = self.__get_lwma(rates["low"])[-1]
+        lwma_high = self.__get_lwma(rates["high"])
+        lwma_low = self.__get_lwma(rates["low"])
 
-        env_up = ((self.deviation / 0.01) * 11.8) * self.mt5.symbol_info(
-            self.symbol
-        ).point + lwma_high
         # fmt: off
-        env_low = (
-            lwma_low - ((self.deviation / 0.01) * 11.8) * self.mt5.symbol_info(self.symbol).point
-        )
+        env_up = [
+            price + ((self.deviation / 0.01) * 11.8) * self.mt5.symbol_info(self.symbol).point
+            for price in lwma_high
+        ]
+
+        env_low = [
+            price - ((self.deviation / 0.01) * 11.8) * self.mt5.symbol_info(self.symbol).point
+            for price in lwma_low
+        ]
         # fmt: on
         self.set_env_up(env_up)
         self.set_env_low(env_low)
