@@ -55,7 +55,7 @@ jobs:
         mypy --install-types
     - name: Test mypy `${{ github.repository }}`
       run:
-        mypy --check-untyped-defs Python/
+        mypy --install-types --check-untyped-defs Python/
 
   test-isort:
     runs-on: ${{ matrix.os }}
