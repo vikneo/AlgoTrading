@@ -86,17 +86,19 @@ class PowerTrend:
             else:
                 avg[key] = value
 
+        full_ind = abs(self.bulish_trend[0] - self.bears_trend[0])
+        full_avg = abs(self.bulish_trend[1] - self.bears_trend[1])
+        full_trend = round((full_ind + full_avg * 100) / 24, 2)
         bulish = round((sum(self.bulish_trend) * 100) / 24, 2)
         bears = round((sum(self.bears_trend) * 100) / 24, 2)
 
-        print(f"Buy Trend = {bulish}%")
-        print(f"Sell Trend = {bears}%")
         # noinspection PyTypeChecker
         data_dict.update(
             indicator=indicator,
             avg=avg,
             bulish_trend=bulish,
             bears_trend=bears,
+            index_trend=full_trend,
         )  # type: ignore
 
         return data_dict
@@ -120,8 +122,8 @@ if __name__ == "__main__":
     # from Python.Experts.Snake.config.currency_pair import curr_pairs
     curr_pairs = [
         "https://ru.investing.com/technical/technical-analysis",  # EUR/USD
-        # "https://ru.investing.com/technical/gbp-usd-technical-analysis",  # GBP/USD
-        # "https://ru.investing.com/technical/usd-jpy-technical-analysis",  # USD/JPY
+        "https://ru.investing.com/technical/gbp-usd-technical-analysis",  # GBP/USD
+        "https://ru.investing.com/technical/usd-jpy-technical-analysis",  # USD/JPY
     ]
 
     while True:
