@@ -3,7 +3,7 @@ from time import sleep
 import MetaTrader5 as mt5
 from expert import Fielder
 
-exp = Fielder(symbol="EURUSD")
+exp = Fielder(symbol="EURUSD", rsi_period=9)
 
 while True:
     try:
